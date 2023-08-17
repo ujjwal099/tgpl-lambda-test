@@ -1,0 +1,54 @@
+name: Deploy AWS Lambda function
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create the zip archive
+        run: |
+          mkdir -p dist
+          rsync -av --exclude='dist' . dist/
+          cd dist/
+          npm install
+          zip -r ../tgpl-lambda-test.zip .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: "ap-south-1"
+          role-duration-seconds: 1200
+          role-session-name: MySessionName
+
+      - name: Push the zip file to S3
+        run: aws s3 cp tgpl-lambda-test.zip s3://html-to-pdf01/tgpl-lambda-test.zip
+
+      - name: Update AWS Lambda function
+        run:
+          aws lambda update-function-code --function-name tgpl-lambda-test --s3-bucket html-to-pdf01 --s3-key tgpl-lambda-test.zip > /dev/null
+
+      - name: Clean up
+        run: rm tgpl-lambda-test.zip
+
+      # - name: Slack Notification
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     SLACK_COLOR: "good"
+      #     SLACK_ICON: https://slack.com/blog/news/10-apps-for-slack-that-just-keep-getting-better
+      #     SLACK_MESSAGE: "tgpl-crm-endpoint-lambda: master branch successfully deployed"
+      #     SLACK_TITLE: "Deployment status"
+      #     SLACK_USERNAME: "Github"
