@@ -226,6 +226,16 @@ const pdfTemplate = (
                         return cuisine + " , ";
                       }
                     )}</span></li>
+                    <li style="box-sizing: border-box;">Pan Number: <span class="field w-75" style="box-sizing: border-box;display: inline-block;width: 75%!important;position: relative;text-decoration: underline;">${
+                      dummyData?.stores[0]?.panNumber
+                        ? dummyData?.stores[0]?.panNumber
+                        : ""
+                    }</span></li>
+                    <li style="box-sizing: border-box;">Gst Number: <span class="field w-75" style="box-sizing: border-box;display: inline-block;width: 75%!important;position: relative;text-decoration: underline;">${
+                      dummyData?.stores[0]?.gst_no
+                        ? dummyData?.stores[0]?.gst_no
+                        : ""
+                    }</span></li>
                     <li style="box-sizing: border-box;">Address: <span class="field w-75" style="box-sizing: border-box;display: inline-block;width: 75%!important;position: relative;text-decoration: underline;">${
                       dummyData?.formData?.corporate_address
                     }</span></li>
@@ -506,7 +516,7 @@ const pdfTemplate = (
 
 <body>
     <div class="container">
-        <div class="col-12 mt-5 mb-5 text-center"><img src="image/logo.png" /></div>
+        <div class="col-12 mt-5 mb-5 text-center"><img src="https://tgpl-crm-api.thriwe.com/parse/files/PROD_APPLICATION_ID/369ab8d05e083f43cd717913d28fcc1d_neba.jpg%20" /></div>
         <div class="col-12">
             <p style="text-align:center"><span style="font-size:11pt"><span style="font-family:Verdana,sans-serif"><strong><span style="font-size:10.5pt"><span style="font-family:&quot;Times New Roman&quot;,serif">MEMORANDUM OF UNDERSTANDING</span></span>
                 </strong>
@@ -2042,6 +2052,14 @@ const pdfTemplate = (
             ?.map((obj) => obj.bankMachineName)
             .join(", ")}
         </li>
+        <li>
+        Pan Number:
+        ${
+          dummyData?.stores[0]?.panNumber ? dummyData?.stores[0]?.panNumber : ""
+        }
+        Gst Number:
+        ${dummyData?.stores[0]?.gst_no ? dummyData?.stores[0]?.gst_no : ""}
+      </li>
         <li>
           TID #:
          ${dummyData?.stores[0].tidANDMID?.map((obj) => obj.tid).join(", ")}
